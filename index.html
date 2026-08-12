@@ -197,7 +197,35 @@
     msalApp.logoutRedirect({ postLogoutRedirectUri: window.location.origin });
   };
 
-  function go(url) { window.open(url, '_blank'); }
+  // Apps no weg-leads que exigem login
+  var WEG_LEADS_AUTH = ['/bi', '/cno', '/', '/leads'];
+
+  function go(url) {
+    // Para apps do weg-leads que precisam de auth, passa o token via SSO
+    if (url.includes('weg-leads.onrender.com')) {
+      var urlObj = new URL(url);
+      var path = urlObj.pathname || '/';
+      var needsAuth = path === '/' || path === '/bi' || path === '/cno' || path === '/leads';
+      if (needsAuth) {
+        var accounts = msalApp.getAllAccounts();
+        if (accounts.length > 0) {
+          msalApp.acquireTokenSilent({ scopes: ['User.Read'], account: accounts[0] })
+            .then(function(result) {
+              var ssoUrl = 'https://weg-leads.onrender.com/auth/sso'
+                + '?token=' + encodeURIComponent(result.accessToken)
+                + '&next=' + encodeURIComponent(path);
+              window.open(ssoUrl, '_blank');
+            })
+            .catch(function() {
+              // Fallback: abre direto (Azure AD vai usar sessão existente)
+              window.open(url, '_blank');
+            });
+          return;
+        }
+      }
+    }
+    window.open(url, '_blank');
+  }
 </script>
 </body>
 </html>
