@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THP Representações – Portal</title>
+  <style>
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #00205B;
+      --blue-mid:  #003087;
+      --green:     #00853D;
+      --green-mid: #006d32;
+      --accent:    #E8F0FE;
+      --bg:        #F3F6FB;
+      --card:      #FFFFFF;
+      --border:    #D8DEE9;
+      --text:      #1A1A2E;
+      --muted:     #6C757D;
+      --radius:    14px;
+      --shadow:    0 4px 20px rgba(0,32,91,.10);
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    header {
+      background: var(--blue);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,.3);
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .brand-icon {
+      width: 40px; height: 40px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; color: #fff; }
+    .brand-text p  { font-size: 12px; color: rgba(255,255,255,.65); }
+
+    .header-right {
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      text-align: right;
+    }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 52px 24px 36px;
+    }
+    .hero h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Grid ────────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    /* ── App Card ────────────────────────────────────────── */
+    .app-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .app-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,32,91,.15);
+    }
+
+    .card-banner {
+      height: 6px;
+    }
+
+    .card-body {
+      padding: 24px 24px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-icon {
+      font-size: 40px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .tag {
+      background: var(--accent);
+      color: var(--blue);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .card-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-dot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+    .dot.online { background: var(--green); box-shadow: 0 0 0 3px rgba(0,133,61,.2); }
+
+    .btn-card {
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .18s;
+    }
+    .btn-card:hover { background: var(--blue-mid); }
+    .btn-card.green { background: var(--green); }
+    .btn-card.green:hover { background: var(--green-mid); }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 600px) {
+      header { padding: 0 16px; }
+      .hero  { padding: 36px 16px 24px; }
+      .grid  { padding: 0 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">⚡</div>
+    <div class="brand-text">
+      <h1>THP Representações</h1>
+      <p>Portal de Ferramentas Internas</p>
+    </div>
+  </div>
+  <div class="header-right">
+    Representante Autorizado WEG<br>
+    <strong style="color:rgba(255,255,255,.8)">thprep.com.br</strong>
+  </div>
+</header>
+
+<div class="hero">
+  <h2>Bem-vindo ao Portal THP</h2>
+  <p>Acesse as ferramentas da equipe em um só lugar.</p>
+</div>
+
+<div class="grid">
+
+  <!-- 1 · Conversor WEG -->
+  <div class="app-card" onclick="openApp('URL_CONVERSOR')">
+    <div class="card-banner" style="background: linear-gradient(90deg, #00205B, #00853D);"></div>
+    <div class="card-body">
+      <span class="card-icon">🔄</span>
+      <div class="card-title">Conversor de Códigos WEG</div>
+      <div class="card-desc">
+        Converta listas de concorrentes (Siemens, ABB, Schneider, Danfoss, Eaton…) para códigos WAU.
+        Aceita foto da lista, print de tela ou planilha Excel. Gera Excel pronto para cotação.
+      </div>
+      <div class="card-tags">
+        <span class="tag">📷 Foto / Print</span>
+        <span class="tag">📊 Excel</span>
+        <span class="tag">IA</span>
+        <span class="tag">Cotação</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="status-dot"><span class="dot online"></span> Online</span>
+      <a class="btn-card green" href="URL_CONVERSOR" target="_blank" onclick="e => e.stopPropagation()">
+        Acessar →
+      </a>
+    </div>
+  </div>
+
+  <!-- 2 · Dashboard -->
+  <div class="app-card" onclick="openApp('URL_DASHBOARD')">
+    <div class="card-banner" style="background: linear-gradient(90deg, #0057B7, #00A3E0);"></div>
+    <div class="card-body">
+      <span class="card-icon">📊</span>
+      <div class="card-title">Dashboard</div>
+      <div class="card-desc">
+        Indicadores e métricas da operação comercial. Visualize metas, carteira de pedidos, pipeline e performance da equipe em tempo real.
+      </div>
+      <div class="card-tags">
+        <span class="tag">Vendas</span>
+        <span class="tag">Metas</span>
+        <span class="tag">KPIs</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="status-dot"><span class="dot online"></span> Online</span>
+      <a class="btn-card" href="URL_DASHBOARD" target="_blank" onclick="e => e.stopPropagation()">
+        Acessar →
+      </a>
+    </div>
+  </div>
+
+  <!-- 3 · BESS Analyzer -->
+  <div class="app-card" onclick="openApp('URL_BESS')">
+    <div class="card-banner" style="background: linear-gradient(90deg, #00853D, #7CB518);"></div>
+    <div class="card-body">
+      <span class="card-icon">🔋</span>
+      <div class="card-title">BESS Analyzer</div>
+      <div class="card-desc">
+        Análise técnica e financeira de sistemas de armazenamento de energia por baterias (BESS). Sizing, payback e comparação de configurações.
+      </div>
+      <div class="card-tags">
+        <span class="tag">Energia</span>
+        <span class="tag">BESS</span>
+        <span class="tag">Sizing</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="status-dot"><span class="dot online"></span> Online</span>
+      <a class="btn-card" href="URL_BESS" target="_blank" onclick="e => e.stopPropagation()" style="background:var(--green);">
+        Acessar →
+      </a>
+    </div>
+  </div>
+
+  <!-- 4 · Registro de Ponto -->
+  <div class="app-card" onclick="openApp('URL_PONTO')">
+    <div class="card-banner" style="background: linear-gradient(90deg, #6A0DAD, #A855F7);"></div>
+    <div class="card-body">
+      <span class="card-icon">⏰</span>
+      <div class="card-title">Registro de Ponto</div>
+      <div class="card-desc">
+        Controle de ponto digital da equipe THP. Registro de entrada, saída e intervalos, com relatórios mensais e exportação para folha de pagamento.
+      </div>
+      <div class="card-tags">
+        <span class="tag">RH</span>
+        <span class="tag">Ponto</span>
+        <span class="tag">Relatórios</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="status-dot"><span class="dot online"></span> Online</span>
+      <a class="btn-card" href="URL_PONTO" target="_blank" onclick="e => e.stopPropagation()" style="background:#6A0DAD;">
+        Acessar →
+      </a>
+    </div>
+  </div>
+
+  <!-- 5 · BI -->
+  <div class="app-card" onclick="openApp('URL_BI')">
+    <div class="card-banner" style="background: linear-gradient(90deg, #D97706, #F59E0B);"></div>
+    <div class="card-body">
+      <span class="card-icon">📈</span>
+      <div class="card-title">BI – Business Intelligence</div>
+      <div class="card-desc">
+        Relatórios analíticos avançados, histórico de vendas, análise de carteira por segmento e produto, e projeções estratégicas.
+      </div>
+      <div class="card-tags">
+        <span class="tag">Análise</span>
+        <span class="tag">Relatórios</span>
+        <span class="tag">Estratégia</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="status-dot"><span class="dot online"></span> Online</span>
+      <a class="btn-card" href="URL_BI" target="_blank" onclick="e => e.stopPropagation()" style="background:#D97706;">
+        Acessar →
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  THP Representações &nbsp;·&nbsp; Representante Autorizado WEG &nbsp;·&nbsp;
+  <span id="ano"></span>
+</footer>
+
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  function openApp(url) {
+    if (!url || url.startsWith('URL_')) {
+      alert('URL não configurada. Edite o index.html e substitua o placeholder pela URL real.');
+      return;
+    }
+    window.open(url, '_blank');
+  }
+
+  // Highlight card on keyboard focus for accessibility
+  document.querySelectorAll('.app-card').forEach(card => {
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

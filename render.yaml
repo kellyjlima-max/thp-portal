@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: thp-portal
+    env: static          # site estático — sem backend, sem custo de CPU
+    staticPublishPath: .  # publica o index.html desta pasta
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
