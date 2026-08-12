@@ -241,16 +241,16 @@
     cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false }
   };
 
-  const msal = new msal.PublicClientApplication(msalConfig);
+  const msalApp = new msal.PublicClientApplication(msalConfig);
   const loginRequest = { scopes: ['User.Read'] };
 
   document.getElementById('ano').textContent = new Date().getFullYear();
 
   async function init() {
     try {
-      const response = await msal.handleRedirectPromise();
+      const response = await msalApp.handleRedirectPromise();
       if (response) { showPortal(response.account); return; }
-      const accounts = msal.getAllAccounts();
+      const accounts = msalApp.getAllAccounts();
       if (accounts.length > 0) { showPortal(accounts[0]); }
       else { showSplash(); }
     } catch (e) { showSplash(); showError(e.message); }
@@ -275,11 +275,11 @@
   }
 
   function login() {
-    msal.loginRedirect(loginRequest).catch(e => showError(e.message));
+    msalApp.loginRedirect(loginRequest).catch(e => showError(e.message));
   }
 
   function logout() {
-    msal.logoutRedirect({ postLogoutRedirectUri: window.location.origin });
+    msalApp.logoutRedirect({ postLogoutRedirectUri: window.location.origin });
   }
 
   function go(url) { window.open(url, '_blank'); }
