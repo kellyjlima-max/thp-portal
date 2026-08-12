@@ -4,380 +4,287 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>THP Representações – Portal</title>
+  <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
   <style>
-    /* ── Reset ───────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --blue:      #00205B;
-      --blue-mid:  #003087;
-      --green:     #00853D;
-      --green-mid: #006d32;
-      --accent:    #E8F0FE;
-      --bg:        #F3F6FB;
-      --card:      #FFFFFF;
-      --border:    #D8DEE9;
-      --text:      #1A1A2E;
-      --muted:     #6C757D;
-      --radius:    14px;
-      --shadow:    0 4px 20px rgba(0,32,91,.10);
+      --blue:#00205B; --blue-mid:#003087; --green:#00853D; --green-mid:#006d32;
+      --accent:#E8F0FE; --bg:#F3F6FB; --card:#FFFFFF; --border:#D8DEE9;
+      --text:#1A1A2E; --muted:#6C757D; --radius:14px; --shadow:0 4px 20px rgba(0,32,91,.10);
     }
+    html,body { min-height:100vh; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); }
 
-    html, body {
-      min-height: 100vh;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+    /* ── Splash ── */
+    #splash {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg,#00205B 0%,#003087 50%,#00853D 100%);
+      flex-direction:column; gap:24px;
     }
+    .splash-box { text-align:center; color:#fff; }
+    .splash-icon { font-size:56px; margin-bottom:16px; }
+    .splash-box h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
+    .splash-box p  { font-size:14px; color:rgba(255,255,255,.7); margin-bottom:28px; }
+    .btn-ms {
+      display:inline-flex; align-items:center; gap:12px;
+      background:#fff; color:#1A1A2E; border:none;
+      padding:13px 28px; border-radius:8px; font-size:15px; font-weight:600;
+      cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,.2); transition:opacity .2s;
+    }
+    .btn-ms:hover { opacity:.92; }
+    .btn-ms img { width:20px; height:20px; }
+    .splash-error { background:rgba(255,255,255,.15); color:#fff; padding:10px 20px; border-radius:8px; font-size:13px; display:none; }
 
-    /* ── Header ─────────────────────────────────────────── */
-    header {
-      background: var(--blue);
-      padding: 0 40px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 10px rgba(0,0,0,.3);
-    }
-
-    .brand { display: flex; align-items: center; gap: 16px; }
-    .brand-icon {
-      width: 40px; height: 40px;
-      background: var(--green);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-    }
-    .brand-text h1 { font-size: 17px; font-weight: 700; color: #fff; }
-    .brand-text p  { font-size: 12px; color: rgba(255,255,255,.65); }
-
-    .header-right {
-      font-size: 12px;
-      color: rgba(255,255,255,.5);
-      text-align: right;
-    }
-
-    /* ── Hero ────────────────────────────────────────────── */
-    .hero {
-      text-align: center;
-      padding: 52px 24px 36px;
-    }
-    .hero h2 {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--blue);
-      margin-bottom: 10px;
-    }
-    .hero p {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    /* ── Grid ────────────────────────────────────────────── */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 22px;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px 60px;
-    }
-
-    /* ── App Card ────────────────────────────────────────── */
-    .app-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: transform .2s, box-shadow .2s;
-      text-decoration: none;
-      color: inherit;
-    }
-    .app-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 32px rgba(0,32,91,.15);
-    }
-
-    .card-banner {
-      height: 6px;
-    }
-
-    .card-body {
-      padding: 24px 24px 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-icon {
-      font-size: 40px;
-      margin-bottom: 14px;
-      display: block;
-    }
-
-    .card-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--blue);
-      margin-bottom: 6px;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.55;
-      flex: 1;
-      margin-bottom: 18px;
-    }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 18px;
-    }
-    .tag {
-      background: var(--accent);
-      color: var(--blue);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .card-footer {
-      padding: 14px 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .status-dot {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #ccc;
-    }
-    .dot.online { background: var(--green); box-shadow: 0 0 0 3px rgba(0,133,61,.2); }
-
-    .btn-card {
-      background: var(--blue);
-      color: #fff;
-      padding: 8px 18px;
-      border-radius: 7px;
-      font-size: 13px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background .18s;
-    }
-    .btn-card:hover { background: var(--blue-mid); }
-    .btn-card.green { background: var(--green); }
-    .btn-card.green:hover { background: var(--green-mid); }
-
-    /* ── Footer ─────────────────────────────────────────── */
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 12px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-    }
-
-    /* ── Responsive ──────────────────────────────────────── */
-    @media (max-width: 600px) {
-      header { padding: 0 16px; }
-      .hero  { padding: 36px 16px 24px; }
-      .grid  { padding: 0 16px 40px; }
-    }
+    /* ── Portal ── */
+    #portal { display:none; }
+    header { background:var(--blue); padding:0 40px; height:64px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 10px rgba(0,0,0,.3); }
+    .brand { display:flex; align-items:center; gap:16px; }
+    .brand-icon { width:40px; height:40px; background:var(--green); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+    .brand-text h1 { font-size:17px; font-weight:700; color:#fff; }
+    .brand-text p  { font-size:12px; color:rgba(255,255,255,.65); }
+    .header-right { display:flex; align-items:center; gap:16px; }
+    .user-info { text-align:right; }
+    .user-name { font-size:13px; font-weight:600; color:#fff; }
+    .user-email { font-size:11px; color:rgba(255,255,255,.55); }
+    .btn-logout { background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.3); padding:6px 14px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn-logout:hover { background:rgba(255,255,255,.25); }
+    .hero { text-align:center; padding:52px 24px 36px; }
+    .hero h2 { font-size:28px; font-weight:700; color:var(--blue); margin-bottom:10px; }
+    .hero p  { font-size:15px; color:var(--muted); max-width:480px; margin:0 auto; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; max-width:1100px; margin:0 auto; padding:0 24px 60px; }
+    .app-card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; transition:transform .2s,box-shadow .2s; cursor:pointer; }
+    .app-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(0,32,91,.15); }
+    .card-banner { height:6px; }
+    .card-body { padding:24px 24px 20px; flex:1; display:flex; flex-direction:column; }
+    .card-icon { font-size:40px; margin-bottom:14px; display:block; }
+    .card-title { font-size:17px; font-weight:700; color:var(--blue); margin-bottom:6px; }
+    .card-desc { font-size:13px; color:var(--muted); line-height:1.55; flex:1; margin-bottom:18px; }
+    .card-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; }
+    .tag { background:var(--accent); color:var(--blue); padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+    .card-footer { padding:14px 24px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .status-dot { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+    .dot { width:8px; height:8px; border-radius:50%; background:#ccc; }
+    .dot.online { background:var(--green); box-shadow:0 0 0 3px rgba(0,133,61,.2); }
+    .btn-card { background:var(--blue); color:#fff; padding:8px 18px; border-radius:7px; font-size:13px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:background .18s; }
+    .btn-card:hover   { background:var(--blue-mid); }
+    .btn-card.green   { background:var(--green); }   .btn-card.green:hover   { background:var(--green-mid); }
+    .btn-card.purple  { background:#6A0DAD; }         .btn-card.purple:hover  { background:#580099; }
+    .btn-card.amber   { background:#D97706; }         .btn-card.amber:hover   { background:#B45309; }
+    .btn-card.teal    { background:#0891B2; }         .btn-card.teal:hover    { background:#0E7490; }
+    .btn-card.rose    { background:#E11D48; }         .btn-card.rose:hover    { background:#BE123C; }
+    .btn-card.indigo  { background:#4F46E5; }         .btn-card.indigo:hover  { background:#4338CA; }
+    footer { text-align:center; padding:20px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); }
+    @media(max-width:600px){ header{padding:0 16px;} .hero{padding:36px 16px 24px;} .grid{padding:0 16px 40px;} }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <div class="brand-icon">⚡</div>
-    <div class="brand-text">
-      <h1>THP Representações</h1>
-      <p>Portal de Ferramentas Internas</p>
-    </div>
+<!-- ── SPLASH / LOGIN ── -->
+<div id="splash">
+  <div class="splash-box">
+    <div class="splash-icon">⚡</div>
+    <h1>THP Representações</h1>
+    <p>Portal de Ferramentas Internas<br>Representante Autorizado WEG</p>
+    <button class="btn-ms" onclick="login()">
+      <img src="https://learn.microsoft.com/en-us/azure/active-directory/develop/media/howto-add-branding-in-apps/ms-symbollockup_mssymbol_19.png" alt="MS" />
+      Entrar com Microsoft
+    </button>
   </div>
-  <div class="header-right">
-    Representante Autorizado WEG<br>
-    <strong style="color:rgba(255,255,255,.8)">thprep.com.br</strong>
-  </div>
-</header>
-
-<div class="hero">
-  <h2>Bem-vindo ao Portal THP</h2>
-  <p>Acesse as ferramentas da equipe em um só lugar.</p>
+  <div class="splash-error" id="splash-error"></div>
 </div>
 
-<div class="grid">
+<!-- ── PORTAL ── -->
+<div id="portal">
+  <header>
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text"><h1>THP Representações</h1><p>Portal de Ferramentas Internas</p></div>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="user-name" id="user-name"></div>
+        <div class="user-email" id="user-email"></div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </div>
+  </header>
 
-  <!-- 1 · Conversor WEG -->
-  <div class="app-card" onclick="openApp('URL_CONVERSOR')">
-    <div class="card-banner" style="background: linear-gradient(90deg, #00205B, #00853D);"></div>
-    <div class="card-body">
-      <span class="card-icon">🔄</span>
-      <div class="card-title">Conversor de Códigos WEG</div>
-      <div class="card-desc">
-        Converta listas de concorrentes (Siemens, ABB, Schneider, Danfoss, Eaton…) para códigos WAU.
-        Aceita foto da lista, print de tela ou planilha Excel. Gera Excel pronto para cotação.
-      </div>
-      <div class="card-tags">
-        <span class="tag">📷 Foto / Print</span>
-        <span class="tag">📊 Excel</span>
-        <span class="tag">IA</span>
-        <span class="tag">Cotação</span>
-      </div>
-    </div>
-    <div class="card-footer">
-      <span class="status-dot"><span class="dot online"></span> Online</span>
-      <a class="btn-card green" href="URL_CONVERSOR" target="_blank" onclick="e => e.stopPropagation()">
-        Acessar →
-      </a>
-    </div>
+  <div class="hero">
+    <h2>Bem-vindo ao Portal THP</h2>
+    <p>Acesse as ferramentas da equipe em um só lugar.</p>
   </div>
 
-  <!-- 2 · Dashboard -->
-  <div class="app-card" onclick="openApp('URL_DASHBOARD')">
-    <div class="card-banner" style="background: linear-gradient(90deg, #0057B7, #00A3E0);"></div>
-    <div class="card-body">
-      <span class="card-icon">📊</span>
-      <div class="card-title">Dashboard</div>
-      <div class="card-desc">
-        Indicadores e métricas da operação comercial. Visualize metas, carteira de pedidos, pipeline e performance da equipe em tempo real.
-      </div>
-      <div class="card-tags">
-        <span class="tag">Vendas</span>
-        <span class="tag">Metas</span>
-        <span class="tag">KPIs</span>
-      </div>
-    </div>
-    <div class="card-footer">
-      <span class="status-dot"><span class="dot online"></span> Online</span>
-      <a class="btn-card" href="URL_DASHBOARD" target="_blank" onclick="e => e.stopPropagation()">
-        Acessar →
-      </a>
-    </div>
-  </div>
+  <div class="grid">
 
-  <!-- 3 · BESS Analyzer -->
-  <div class="app-card" onclick="openApp('URL_BESS')">
-    <div class="card-banner" style="background: linear-gradient(90deg, #00853D, #7CB518);"></div>
-    <div class="card-body">
-      <span class="card-icon">🔋</span>
-      <div class="card-title">BESS Analyzer</div>
-      <div class="card-desc">
-        Análise técnica e financeira de sistemas de armazenamento de energia por baterias (BESS). Sizing, payback e comparação de configurações.
+    <div class="app-card" onclick="go('https://weg-converter.onrender.com')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#00205B,#00853D);"></div>
+      <div class="card-body">
+        <span class="card-icon">🔄</span>
+        <div class="card-title">Conversor de Códigos WEG</div>
+        <div class="card-desc">Converta listas de concorrentes (Siemens, ABB, Schneider, Danfoss, Eaton…) para códigos WAU. Aceita foto da lista, print de tela ou planilha Excel. Gera Excel pronto para cotação.</div>
+        <div class="card-tags"><span class="tag">📷 Foto / Print</span><span class="tag">📊 Excel</span><span class="tag">IA</span><span class="tag">Cotação</span></div>
       </div>
-      <div class="card-tags">
-        <span class="tag">Energia</span>
-        <span class="tag">BESS</span>
-        <span class="tag">Sizing</span>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card green" href="https://weg-converter.onrender.com" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
       </div>
     </div>
-    <div class="card-footer">
-      <span class="status-dot"><span class="dot online"></span> Online</span>
-      <a class="btn-card" href="URL_BESS" target="_blank" onclick="e => e.stopPropagation()" style="background:var(--green);">
-        Acessar →
-      </a>
-    </div>
-  </div>
 
-  <!-- 4 · Registro de Ponto -->
-  <div class="app-card" onclick="openApp('URL_PONTO')">
-    <div class="card-banner" style="background: linear-gradient(90deg, #6A0DAD, #A855F7);"></div>
-    <div class="card-body">
-      <span class="card-icon">⏰</span>
-      <div class="card-title">Registro de Ponto</div>
-      <div class="card-desc">
-        Controle de ponto digital da equipe THP. Registro de entrada, saída e intervalos, com relatórios mensais e exportação para folha de pagamento.
+    <div class="app-card" onclick="go('https://weg-leads.onrender.com/')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#E11D48,#FB7185);"></div>
+      <div class="card-body">
+        <span class="card-icon">🎯</span>
+        <div class="card-title">Leads</div>
+        <div class="card-desc">Gestão e acompanhamento de leads comerciais. Registre, qualifique e acompanhe oportunidades do início ao fechamento.</div>
+        <div class="card-tags"><span class="tag">Comercial</span><span class="tag">Prospecção</span><span class="tag">Pipeline</span></div>
       </div>
-      <div class="card-tags">
-        <span class="tag">RH</span>
-        <span class="tag">Ponto</span>
-        <span class="tag">Relatórios</span>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card rose" href="https://weg-leads.onrender.com/" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
       </div>
     </div>
-    <div class="card-footer">
-      <span class="status-dot"><span class="dot online"></span> Online</span>
-      <a class="btn-card" href="URL_PONTO" target="_blank" onclick="e => e.stopPropagation()" style="background:#6A0DAD;">
-        Acessar →
-      </a>
-    </div>
-  </div>
 
-  <!-- 5 · BI -->
-  <div class="app-card" onclick="openApp('URL_BI')">
-    <div class="card-banner" style="background: linear-gradient(90deg, #D97706, #F59E0B);"></div>
-    <div class="card-body">
-      <span class="card-icon">📈</span>
-      <div class="card-title">BI – Business Intelligence</div>
-      <div class="card-desc">
-        Relatórios analíticos avançados, histórico de vendas, análise de carteira por segmento e produto, e projeções estratégicas.
+    <div class="app-card" onclick="go('https://weg-leads.onrender.com/crm')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#4F46E5,#818CF8);"></div>
+      <div class="card-body">
+        <span class="card-icon">🤝</span>
+        <div class="card-title">CRM</div>
+        <div class="card-desc">Gestão de relacionamento com clientes. Histórico de contatos, oportunidades ativas e acompanhamento do ciclo de vendas.</div>
+        <div class="card-tags"><span class="tag">Clientes</span><span class="tag">Relacionamento</span><span class="tag">Vendas</span></div>
       </div>
-      <div class="card-tags">
-        <span class="tag">Análise</span>
-        <span class="tag">Relatórios</span>
-        <span class="tag">Estratégia</span>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card indigo" href="https://weg-leads.onrender.com/crm" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
       </div>
     </div>
-    <div class="card-footer">
-      <span class="status-dot"><span class="dot online"></span> Online</span>
-      <a class="btn-card" href="URL_BI" target="_blank" onclick="e => e.stopPropagation()" style="background:#D97706;">
-        Acessar →
-      </a>
-    </div>
-  </div>
 
+    <div class="app-card" onclick="go('https://weg-leads.onrender.com/cno')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#0891B2,#38BDF8);"></div>
+      <div class="card-body">
+        <span class="card-icon">🏗️</span>
+        <div class="card-title">CNO</div>
+        <div class="card-desc">Acompanhamento de obras e projetos (CNO). Gerencie canteiros, fornecimentos e cronogramas de entrega para obras em andamento.</div>
+        <div class="card-tags"><span class="tag">Obras</span><span class="tag">Projetos</span><span class="tag">Cronograma</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card teal" href="https://weg-leads.onrender.com/cno" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
+      </div>
+    </div>
+
+    <div class="app-card" onclick="go('https://weg-leads.onrender.com/dashboard')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#0057B7,#00A3E0);"></div>
+      <div class="card-body">
+        <span class="card-icon">📊</span>
+        <div class="card-title">Dashboard</div>
+        <div class="card-desc">Indicadores e métricas da operação comercial. Visualize metas, carteira de pedidos, pipeline e performance da equipe em tempo real.</div>
+        <div class="card-tags"><span class="tag">Vendas</span><span class="tag">Metas</span><span class="tag">KPIs</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card" href="https://weg-leads.onrender.com/dashboard" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
+      </div>
+    </div>
+
+    <div class="app-card" onclick="go('https://weg-leads.onrender.com/bi')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#D97706,#F59E0B);"></div>
+      <div class="card-body">
+        <span class="card-icon">📈</span>
+        <div class="card-title">BI – Business Intelligence</div>
+        <div class="card-desc">Relatórios analíticos avançados, histórico de vendas, análise de carteira por segmento e produto, e projeções estratégicas.</div>
+        <div class="card-tags"><span class="tag">Análise</span><span class="tag">Relatórios</span><span class="tag">Estratégia</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card amber" href="https://weg-leads.onrender.com/bi" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
+      </div>
+    </div>
+
+    <div class="app-card" onclick="go('https://blue-mushroom-05e599f0f.7.azurestaticapps.net/')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#00853D,#7CB518);"></div>
+      <div class="card-body">
+        <span class="card-icon">🔋</span>
+        <div class="card-title">BESS Analyzer</div>
+        <div class="card-desc">Análise técnica e financeira de sistemas de armazenamento de energia por baterias (BESS). Sizing, payback e comparação de configurações.</div>
+        <div class="card-tags"><span class="tag">Energia</span><span class="tag">BESS</span><span class="tag">Sizing</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card green" href="https://blue-mushroom-05e599f0f.7.azurestaticapps.net/" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
+      </div>
+    </div>
+
+    <div class="app-card" onclick="go('https://brave-flower-040e29210.7.azurestaticapps.net/')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#6A0DAD,#A855F7);"></div>
+      <div class="card-body">
+        <span class="card-icon">⏰</span>
+        <div class="card-title">Registro de Ponto</div>
+        <div class="card-desc">Controle de ponto digital da equipe THP. Registro de entrada, saída e intervalos, com relatórios mensais e exportação para folha de pagamento.</div>
+        <div class="card-tags"><span class="tag">RH</span><span class="tag">Ponto</span><span class="tag">Relatórios</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot"><span class="dot online"></span> Online</span>
+        <a class="btn-card purple" href="https://brave-flower-040e29210.7.azurestaticapps.net/" target="_blank" onclick="event.stopPropagation()">Acessar →</a>
+      </div>
+    </div>
+
+  </div>
+  <footer>THP Representações &nbsp;·&nbsp; Representante Autorizado WEG &nbsp;·&nbsp; <span id="ano"></span></footer>
 </div>
-
-<footer>
-  THP Representações &nbsp;·&nbsp; Representante Autorizado WEG &nbsp;·&nbsp;
-  <span id="ano"></span>
-</footer>
 
 <script>
+  const msalConfig = {
+    auth: {
+      clientId: '9ea1ffe7-ed2c-4ef6-900c-a5a5d4355fc1',
+      authority: 'https://login.microsoftonline.com/a6fa8687-5ce0-4806-94c1-87caa25e3967',
+      redirectUri: window.location.origin
+    },
+    cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false }
+  };
+
+  const msal = new msal.PublicClientApplication(msalConfig);
+  const loginRequest = { scopes: ['User.Read'] };
+
   document.getElementById('ano').textContent = new Date().getFullYear();
 
-  function openApp(url) {
-    if (!url || url.startsWith('URL_')) {
-      alert('URL não configurada. Edite o index.html e substitua o placeholder pela URL real.');
-      return;
-    }
-    window.open(url, '_blank');
+  async function init() {
+    try {
+      const response = await msal.handleRedirectPromise();
+      if (response) { showPortal(response.account); return; }
+      const accounts = msal.getAllAccounts();
+      if (accounts.length > 0) { showPortal(accounts[0]); }
+      else { showSplash(); }
+    } catch (e) { showSplash(); showError(e.message); }
   }
 
-  // Highlight card on keyboard focus for accessibility
-  document.querySelectorAll('.app-card').forEach(card => {
-    card.setAttribute('tabindex', '0');
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.click();
-      }
-    });
-  });
-</script>
+  function showSplash() {
+    document.getElementById('splash').style.display = 'flex';
+    document.getElementById('portal').style.display = 'none';
+  }
 
+  function showPortal(account) {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('portal').style.display = 'block';
+    document.getElementById('user-name').textContent = account.name || account.username;
+    document.getElementById('user-email').textContent = account.username;
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('splash-error');
+    el.textContent = 'Erro ao autenticar: ' + msg;
+    el.style.display = 'block';
+  }
+
+  function login() {
+    msal.loginRedirect(loginRequest).catch(e => showError(e.message));
+  }
+
+  function logout() {
+    msal.logoutRedirect({ postLogoutRedirectUri: window.location.origin });
+  }
+
+  function go(url) { window.open(url, '_blank'); }
+
+  init();
+</script>
 </body>
 </html>
