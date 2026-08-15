@@ -107,10 +107,10 @@
       <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card rose" onclick="event.stopPropagation();go('https://weg-leads.onrender.com/')">Acessar →</button></div>
     </div>
 
-    <div class="app-card" onclick="go('https://weg-leads.onrender.com/crm')">
+    <div class="app-card" onclick="go('https://crm-thp.onrender.com/crm')">
       <div class="card-banner" style="background:linear-gradient(90deg,#4F46E5,#818CF8);"></div>
       <div class="card-body"><span class="card-icon">🤝</span><div class="card-title">CRM</div><div class="card-desc">Gestão de relacionamento com clientes. Histórico de contatos, oportunidades ativas e acompanhamento do ciclo de vendas.</div><div class="card-tags"><span class="tag">Clientes</span><span class="tag">Relacionamento</span><span class="tag">Vendas</span></div></div>
-      <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card indigo" onclick="event.stopPropagation();go('https://weg-leads.onrender.com/crm')">Acessar →</button></div>
+      <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card indigo" onclick="event.stopPropagation();go('https://crm-thp.onrender.com/crm')">Acessar →</button></div>
     </div>
 
     <div class="app-card" onclick="go('https://weg-leads.onrender.com/cno')">
@@ -233,6 +233,13 @@
           window.open(url + sep + 'portal_token=' + encodeURIComponent(r.accessToken), '_blank');
         })
         .catch(function() { window.open(url, '_blank'); });
+      return;
+    }
+
+    // CRM THP (next-auth): auto-login via ?auto=1 na página de login
+    if (url.includes('crm-thp.onrender.com')) {
+      var crmLogin = 'https://crm-thp.onrender.com/crm/login?auto=1';
+      window.open(crmLogin, '_blank');
       return;
     }
 
