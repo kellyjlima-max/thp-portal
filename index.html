@@ -56,6 +56,7 @@
     .btn-card.teal    { background:#0891B2; }         .btn-card.teal:hover    { background:#0E7490; }
     .btn-card.rose    { background:#E11D48; }         .btn-card.rose:hover    { background:#BE123C; }
     .btn-card.indigo  { background:#4F46E5; }         .btn-card.indigo:hover  { background:#4338CA; }
+    .btn-card.cyan    { background:#0369A1; }         .btn-card.cyan:hover    { background:#075985; }
     footer { text-align:center; padding:20px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); }
     @media(max-width:600px){ header{padding:0 16px;} .hero{padding:36px 16px 24px;} .grid{padding:0 16px 40px;} }
   </style>
@@ -143,6 +144,12 @@
       <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card purple" onclick="event.stopPropagation();go('https://brave-flower-040e29210.7.azurestaticapps.net/')">Acessar →</button></div>
     </div>
 
+    <div class="app-card" id="card-stocks" style="display:none" onclick="go('https://stocks-thp.onrender.com')">
+      <div class="card-banner" style="background:linear-gradient(90deg,#0C4A6E,#0369A1);"></div>
+      <div class="card-body"><span class="card-icon">📉</span><div class="card-title">Analisador B3</div><div class="card-desc">Análise técnica de ações da B3. EMAs, estocástico, volume, sinais de entrada/saída, pivôs de suporte/resistência e fluxo de investidores.</div><div class="card-tags"><span class="tag">Ações</span><span class="tag">B3</span><span class="tag">Técnica</span><span class="tag">Gráficos</span></div></div>
+      <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card cyan" onclick="event.stopPropagation();go('https://stocks-thp.onrender.com')">Acessar →</button></div>
+    </div>
+
     <div class="app-card" onclick="go('https://thprepcombr.sharepoint.com/sites/THPRepresentacoes/SitePages/ProjectHome.aspx')">
       <div class="card-banner" style="background:linear-gradient(90deg,#0B6A0B,#30A030);"></div>
       <div class="card-body"><span class="card-icon">📁</span><div class="card-title">SharePoint THP</div><div class="card-desc">Base de documentos, projetos e arquivos compartilhados da equipe THP no Microsoft 365. Acesse pastas, listas e páginas da intranet.</div><div class="card-tags"><span class="tag">Documentos</span><span class="tag">Microsoft 365</span><span class="tag">Intranet</span></div></div>
@@ -175,11 +182,16 @@
     el.style.display = 'block';
   }
 
+  var STOCKS_EMAILS = ['kellylima@thprep.com.br', 'thiagopereira@thprep.com.br'];
+
   function showPortal(account) {
     document.getElementById('splash').style.display = 'none';
     document.getElementById('portal').style.display = 'block';
     document.getElementById('user-name').textContent = account.name || account.username;
     document.getElementById('user-email').textContent = account.username;
+    if (STOCKS_EMAILS.indexOf(account.username.toLowerCase()) !== -1) {
+      document.getElementById('card-stocks').style.display = 'flex';
+    }
   }
 
   msalApp.handleRedirectPromise().then(function(response) {
@@ -208,7 +220,6 @@
     if (accounts.length === 0) { window.open(url, '_blank'); return; }
     var account = accounts[0];
 
-    // weg-leads: SSO via endpoint /auth/sso no backend
     if (url.includes('weg-leads.onrender.com')) {
       var urlObj = new URL(url);
       var path = urlObj.pathname || '/';
@@ -225,7 +236,17 @@
       }
     }
 
-    // BESS e Ponto (Azure Static Web Apps): SSO via portal_token na URL
+    if (url.includes('stocks-thp.onrender.com')) {
+      msalApp.acquireTokenSilent({ scopes: ['User.Read'], account: account })
+        .then(function(r) {
+          window.open('https://stocks-thp.onrender.com/auth/sso?token='
+            + encodeURIComponent(r.accessToken)
+            + '&next=/', '_blank');
+        })
+        .catch(function() { window.open(url, '_blank'); });
+      return;
+    }
+
     if (url.includes('azurestaticapps.net')) {
       msalApp.acquireTokenSilent({ scopes: ['User.Read'], account: account })
         .then(function(r) {
@@ -236,7 +257,6 @@
       return;
     }
 
-    // CRM THP (next-auth): auto-login via ?auto=1 na página de login
     if (url.includes('crm-thp.onrender.com')) {
       var crmLogin = 'https://crm-thp.onrender.com/crm/login?auto=1';
       window.open(crmLogin, '_blank');
