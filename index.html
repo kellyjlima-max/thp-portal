@@ -114,10 +114,10 @@
       <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card indigo" onclick="event.stopPropagation();go('https://crm-thp.onrender.com/crm')">Acessar →</button></div>
     </div>
 
-    <div class="app-card" onclick="go('https://weg-leads.onrender.com/cno')">
+    <div class="app-card" onclick="go('https://weg-leads.onrender.com/bess')">
       <div class="card-banner" style="background:linear-gradient(90deg,#0891B2,#38BDF8);"></div>
-      <div class="card-body"><span class="card-icon">🏗️</span><div class="card-title">CNO</div><div class="card-desc">Acompanhamento de obras e projetos (CNO). Gerencie canteiros, fornecimentos e cronogramas de entrega para obras em andamento.</div><div class="card-tags"><span class="tag">Obras</span><span class="tag">Projetos</span><span class="tag">Cronograma</span></div></div>
-      <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card teal" onclick="event.stopPropagation();go('https://weg-leads.onrender.com/cno')">Acessar →</button></div>
+      <div class="card-body"><span class="card-icon">🎯</span><div class="card-title">Clientes Potenciais</div><div class="card-desc">Alvos para BESS e solar no PI, MA, TO, PA, CE e BA: hospitais, supermercados, shoppings, frio, agro com irrigação, quem já tem solar (ANEEL) e obras (CNO). Mapa, repasse a integradores e envio ao CRM.</div><div class="card-tags"><span class="tag">BESS</span><span class="tag">Geração Distribuída</span><span class="tag">Outorgas</span><span class="tag">CNO</span></div></div>
+      <div class="card-footer"><span class="status-dot"><span class="dot online"></span> Online</span><button class="btn-card teal" onclick="event.stopPropagation();go('https://weg-leads.onrender.com/bess')">Acessar →</button></div>
     </div>
 
     <div class="app-card" onclick="go('https://weg-leads.onrender.com/dashboard')">
@@ -223,7 +223,7 @@
     if (url.includes('weg-leads.onrender.com')) {
       var urlObj = new URL(url);
       var path = urlObj.pathname || '/';
-      var needsAuth = path === '/' || path === '/bi' || path === '/cno' || path === '/leads';
+      var needsAuth = path === '/' || path === '/bi' || path === '/cno' || path === '/leads' || path === '/bess' || path === '/gd' || path === '/outorgas';
       if (needsAuth) {
         msalApp.acquireTokenSilent({ scopes: ['User.Read'], account: account })
           .then(function(r) {
